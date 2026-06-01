@@ -7,3 +7,5 @@ The plugin is built for Paper servers on version 1.21.11 and has not been tested
 
 I do plan to continue to update this plugin, though I cannot promise how big or frequent those updates will be.
 The plugin will be posted on Modrinth (hopefully) soon™ and a Discord server will be made available for support and bug reports soon™.  For now, any bug reports or support related questions can be directed to @realgrk on Discord or can be posted through GitHub issues.
+
+*This plugin is a complete rewrite of the plugin 'Essence' that I created in September 2024, hence the 'Reborn'*
