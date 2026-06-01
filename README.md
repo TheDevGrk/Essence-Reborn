@@ -1,6 +1,9 @@
 # Essence-Reborn
 
 **Essence Reborn is a Minecraft plugin that allows players to be imbued with the power of the mobs that they have slain!**
+![Wither-power](https://imgur.com/a/aCBYoNl)
+
+
 The plugin is built for Paper servers on version 1.21.11 and has not been tested on any other versions or server softwares.
 
 **Disclaimer:** While this project is in a stable state, it is still technically a work in progress.  I do not guarantee that anything works perfectly or that it is completely balanced.
