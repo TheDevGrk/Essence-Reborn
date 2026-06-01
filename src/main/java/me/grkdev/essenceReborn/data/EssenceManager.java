@@ -9,12 +9,14 @@ import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import me.grkdev.essenceReborn.EssenceReborn;
+import me.grkdev.essenceReborn.PowerManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -93,6 +95,24 @@ public class EssenceManager {
         NamespacedKey key = new NamespacedKey(plugin, "active_essence");
 
         pdc.set(key, PersistentDataType.STRING, type.toString());
+
+        //turn off necromancy mode if switched from wither
+        player.getPersistentDataContainer().set(new NamespacedKey(plugin, "necromancy_mode"), PersistentDataType.BOOLEAN, false);
+
+        // reset enderman reach
+        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).setBaseValue(4.5);
+        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).setBaseValue(3);
+
+        //reset warden swift sneak
+        player.getAttribute(Attribute.SNEAKING_SPEED).setBaseValue(.3);
+
+        // start passive power
+        type.power.onPassivePower(player);
+
+        // reset cooldowns
+        PowerManager.hideAllCooldownBars(player);
+        PowerManager.resetWeakPowerCooldown(player);
+        PowerManager.resetStrongPowerCooldown(player);
 
 
     }

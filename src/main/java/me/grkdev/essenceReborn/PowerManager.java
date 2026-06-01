@@ -103,6 +103,21 @@ public class PowerManager {
         pdc.set(new NamespacedKey(plugin, "strongCooldownStart"), PersistentDataType.LONG, System.nanoTime());
     }
 
+    public static void resetWeakPowerCooldown(Player player){
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        pdc.set(new NamespacedKey(plugin, "weakCooldownStart"), PersistentDataType.LONG, 0L);
+    }
+
+    public static void resetStrongPowerCooldown(Player player){
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        pdc.set(new NamespacedKey(plugin, "strongCooldownStart"), PersistentDataType.LONG, 0L);
+    }
+
+    public static void hideAllCooldownBars(Player player){
+        for (BossBar bar : player.activeBossBars()){
+            player.hideBossBar(bar);
+        }
+    }
     // ------------------------------------------------------------------------------------------------------------------------------------------
 
     //checks if the specified player is on the specified cooldown

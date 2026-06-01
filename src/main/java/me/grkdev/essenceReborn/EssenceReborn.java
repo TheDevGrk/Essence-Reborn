@@ -59,8 +59,9 @@ public final class EssenceReborn extends JavaPlugin {
         //-----------------------------------------------------------------------------------
 
         for (Player p : this.getServer().getOnlinePlayers()){
-            PowerManager.setWeakPowerCooldown(p);
-            PowerManager.setStrongPowerCooldown(p);
+            PowerManager.hideAllCooldownBars(p);
+            PowerManager.resetWeakPowerCooldown(p);
+            PowerManager.resetStrongPowerCooldown(p);
             EssenceManager.getActiveEssence(p).power.onPassivePower(p);
             p.getPersistentDataContainer().set(new NamespacedKey(plugin, "has_surprise_chicken"), PersistentDataType.BOOLEAN, false);
         }
@@ -106,6 +107,7 @@ public final class EssenceReborn extends JavaPlugin {
     // make activatePassivePower and deactivatePassivePower functions instead of just onPassivePower and make this work with enable/disable
     // make passive mob attack be a Goal instead
     // make Surprise Chicken eggs not spawn chickens when cracking
+    // make cooldown bars reappear when joining
 
     //! Future Features
     // Essence as an item

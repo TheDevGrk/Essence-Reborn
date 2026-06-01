@@ -37,22 +37,12 @@ public class EssenceSwitchDialogListener implements Listener {
         if (e.getCommonConnection() instanceof PlayerGameConnection conn){
             Player player = conn.getPlayer();
             EssenceTypes type = EssenceTypes.getEssenceType(essenceType);
+
+            // switch player essence
             EssenceManager.setActiveEssence(player, type);
-            type.power.onPassivePower(player);
 
 
-
-            //turn off necromancy mode if switched from wither
-            player.getPersistentDataContainer().set(new NamespacedKey(plugin, "necromancy_mode"), PersistentDataType.BOOLEAN, false);
-
-            // reset enderman reach
-            player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).setBaseValue(4.5);
-            player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).setBaseValue(3);
-
-            //reset warden swift sneak
-            player.getAttribute(Attribute.SNEAKING_SPEED).setBaseValue(.3);
-
-
+            // notify player
             player.sendMessage(Component.text("Your essence has been switched to " + essenceType, NamedTextColor.AQUA));
 
 
@@ -69,6 +59,7 @@ public class EssenceSwitchDialogListener implements Listener {
                 }
             }
             else if (e.getIdentifier().equals(Key.key("essence_reborn:essence_switch/confirm/select_essence_command"))){
+                // /selectessence can only be used once
                 player.getPersistentDataContainer().set(new NamespacedKey(plugin, "select_essence_used"), PersistentDataType.BOOLEAN, true);
             }
         }
