@@ -41,7 +41,7 @@ public class NecromancyMobDeathListener implements Listener {
             // simply kill the mob in the storage if it was killed by its owner whilst in necromancy mode
             if (Wither.isOwned(mob, player)){
                 Bukkit.getEntity(UUID.fromString(mobPDC.getOrDefault(new NamespacedKey(plugin, "parentUUID"), PersistentDataType.STRING, ""))).remove();
-                playerPDC.set(countKey, PersistentDataType.INTEGER, mobCount - 1);
+                playerPDC.set(countKey, PersistentDataType.INTEGER, Math.max(mobCount - 1, 0));
                 return;
             }
 
@@ -51,12 +51,23 @@ public class NecromancyMobDeathListener implements Listener {
             //checks if player is already at max necromanced mobs
             if (mobCount >= maxMobs){
                 player.sendMessage(Component.text("You cannot bind anymore mobs into your servitude!", NamedTextColor.RED));
+                return;
             }
-            // store copied mob in storage dimension
-            Mob copiedMob = (Mob) mob.copy(new Location(overWorld, 0, 15000, 0));
+
+            // store copied mob in storage location
+            Mob copiedMob = (Mob) mob.copy(new Location(overWorld, 0, 150, 0));
             copiedMob.setHealth(copiedMob.getAttribute(Attribute.MAX_HEALTH).getValue());
             copiedMob.setAI(false);
+            copiedMob.setInvulnerable(true);
+            copiedMob.setFireTicks(0);
             copiedMob.setPersistent(true);
+            copiedMob.customName(Component.text("Necromanced Mob"));
+            copiedMob.setRemoveWhenFarAway(false);
+            copiedMob.setVisibleByDefault(false);
+
+
+
+
 
 
             copiedMob.getPersistentDataContainer().set(ownerKey, PersistentDataType.STRING, player.getUniqueId().toString());

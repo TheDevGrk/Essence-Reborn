@@ -89,7 +89,7 @@ public class Wither extends Power {
         ArrayList<Mob> necromancedMobs = new ArrayList<>();
 
         // spawn all necromanced mobs that belong to the player
-        Location mobLoc = new Location(overWorld, 0, 15000, 0);
+        Location mobLoc = new Location(overWorld, 0, 150, 0);
         for (Mob mob : overWorld.getNearbyEntitiesByType(Mob.class, mobLoc, 16)){
             if (isOwned(mob, player)){
                 // vary spawn location for each mob, ensuring that mob is spawned on surface
@@ -103,6 +103,7 @@ public class Wither extends Power {
 
                 // spawn mob
                 Mob copiedMob = (Mob) mob.copy(spawnLoc);
+                copiedMob.setVisibleByDefault(true);
                 necromancedMobs.add(copiedMob);
 
 
