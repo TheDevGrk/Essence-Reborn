@@ -17,7 +17,7 @@ public enum EssenceTypes {
     PIGLIN(EntityType.PIGLIN, .1, 160, 300, 90, new Piglin(), 200, 300, "Greed", "Gilded", "Nether-Born", EssenceDescriptions.PIGLIN_POWER_WEAK, EssenceDescriptions.PIGLIN_POWER_STRONG, EssenceDescriptions.PIGLIN_POWER_PASSIVE, NamedTextColor.GOLD),
     BREEZE(EntityType.BREEZE, .2, 35, 115, 90, new Breeze(), 20, 150, "Gust", "Whirlwind", "Being of the Wind", EssenceDescriptions.BREEZE_POWER_WEAK, EssenceDescriptions.BREEZE_POWER_STRONG, EssenceDescriptions.BREEZE_POWER_PASSIVE, NamedTextColor.WHITE),
     ENDERMAN(EntityType.ENDERMAN, .1, 130, 250, 180, new Enderman(), 180, 180, "Quantum Leap", "Hydrophobic", "Lanky Arms", EssenceDescriptions.ENDERMAN_POWER_WEAK, EssenceDescriptions.ENDERMAN_POWER_STRONG, EssenceDescriptions.ENDERMAN_POWER_PASSIVE, NamedTextColor.LIGHT_PURPLE),
-    WITHER(EntityType.WITHER, .3, 10, 90, 25, new Wither(), 60, 2, "Exploding Skulls", "Necromancer Lord", "Decaying Touch", EssenceDescriptions.WITHER_POWER_WEAK, EssenceDescriptions.WITHER_POWER_STRONG, EssenceDescriptions.WITHER_POWER_PASSIVE, NamedTextColor.DARK_GRAY),
+    WITHER(EntityType.WITHER, .3, 10, 90, 25, new Wither(), 60,  480, "Exploding Skulls", "Necromancer Lord", "Decaying Touch", EssenceDescriptions.WITHER_POWER_WEAK, EssenceDescriptions.WITHER_POWER_STRONG, EssenceDescriptions.WITHER_POWER_PASSIVE, NamedTextColor.DARK_GRAY),
     WARDEN(EntityType.WARDEN, .2, 55, 75, 25, new Warden(), 90, 120, "Sonic Boom", "Sniff", "Sneaky", EssenceDescriptions.WARDEN_POWER_WEAK, EssenceDescriptions.WARDEN_POWER_STRONG, EssenceDescriptions.WARDEN_POWER_PASSIVE, NamedTextColor.DARK_BLUE),
 
     ;

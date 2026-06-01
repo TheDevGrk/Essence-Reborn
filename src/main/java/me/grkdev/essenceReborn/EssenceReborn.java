@@ -41,6 +41,7 @@ public final class EssenceReborn extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EssenceSwitcherListener(), this);
         Bukkit.getPluginManager().registerEvents(new SculkImmunityListener(), this);
         Bukkit.getPluginManager().registerEvents(new WardenImmunityListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ResourcePackOnJoinListener(), this);
 
         //-----------------------------------------------------------------------------------
 
