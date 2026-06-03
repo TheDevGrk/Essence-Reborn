@@ -94,20 +94,17 @@ public class EssenceManager {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "active_essence");
 
+        // deactivate previous passive power
+        getActiveEssence(player).power.deactivatePassivePower(player);
+
+        // switch essence
         pdc.set(key, PersistentDataType.STRING, type.toString());
 
-        //turn off necromancy mode if switched from wither
-        player.getPersistentDataContainer().set(new NamespacedKey(plugin, "necromancy_mode"), PersistentDataType.BOOLEAN, false);
 
-        // reset enderman reach
-        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).setBaseValue(4.5);
-        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).setBaseValue(3);
-
-        //reset warden swift sneak
-        player.getAttribute(Attribute.SNEAKING_SPEED).setBaseValue(.3);
-
-        // start passive power
-        type.power.onPassivePower(player);
+        // activate passive power if enabled
+        if (type.power.isEnabled()){
+            type.power.activatePassivePower(player);
+        }
 
         // reset cooldowns
         PowerManager.hideAllCooldownBars(player);
@@ -197,6 +194,23 @@ public class EssenceManager {
 
         switcher.setItemMeta(meta);
         return switcher;
+    }
+
+    public static ItemStack createEssenceCrystal(){
+        ItemStack crystal = new ItemStack(Material.PAPER);
+        ItemMeta crystalMeta = crystal.getItemMeta();
+
+        crystalMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "is_power_crystal"), PersistentDataType.BOOLEAN, true);
+        crystalMeta.setItemModel(NamespacedKey.fromString("minecraft:item/essencereborn/power_crystal"));
+        crystalMeta.displayName(Component.text("Essence Crystal", NamedTextColor.DARK_PURPLE).decorate(TextDecoration.BOLD));
+        crystalMeta.lore(List.of(
+                Component.text("Essence Crystals are imbued with the magic of mobs!", NamedTextColor.GREEN),
+                Component.text("Right Click whilst holding your crystal to activate your Weak Power!", NamedTextColor.BLUE),
+                Component.text("Sneak + Right Click whilst holding your crystal to activate your Strong Power!", NamedTextColor.BLUE)));
+        crystalMeta.setMaxStackSize(1);
+        crystal.setItemMeta(crystalMeta);
+
+        return crystal;
     }
     //-------------------------
 

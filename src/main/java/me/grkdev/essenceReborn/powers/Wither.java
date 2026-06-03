@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -27,6 +28,10 @@ public class Wither extends Power {
 
     private EssenceTypes essenceType = EssenceTypes.WITHER;
 
+
+
+
+
     public EssenceTypes getEssenceType() {
         return essenceType;
     }
@@ -36,10 +41,23 @@ public class Wither extends Power {
     }
 
 
+
+
+
     @Override
-    public void onPassivePower(Player player) {
+    public void activatePassivePower(Player player) {
 
     }
+
+    @Override
+    public void deactivatePassivePower(Player player) {
+        player.getPersistentDataContainer().set(new NamespacedKey(plugin, "necromancy_mode"), PersistentDataType.BOOLEAN, false);
+    }
+
+
+
+
+
 
     @Override
     public void onWeakPower(Player player) {
@@ -68,11 +86,6 @@ public class Wither extends Power {
 
         }, 0, 10);
     }
-
-
-
-
-
 
 
 
@@ -189,7 +202,7 @@ public class Wither extends Power {
 
 
     //! AI made animation
-    public void playEmergeAnimation(LivingEntity mob) {
+    public void playEmergeAnimation(@NonNull LivingEntity mob) {
         Location surface = mob.getLocation();
         double depth = 3;
 

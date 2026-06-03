@@ -27,7 +27,8 @@ public abstract class Power {
 
     public abstract void onWeakPower(Player player);
     public abstract void onStrongPower(Player player);
-    public abstract void onPassivePower(Player player);
+    public abstract void activatePassivePower(Player player);
+    public abstract void deactivatePassivePower(Player player);
     public abstract EssenceTypes getEssenceType();
     public abstract void setEssenceType(EssenceTypes essenceType);
 

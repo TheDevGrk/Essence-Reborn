@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ import static me.grkdev.essenceReborn.EssenceReborn.plugin;
 
 public class Breeze extends Power {
     private EssenceTypes essenceType = EssenceTypes.BREEZE;
+    private BukkitTask passiveTask;
+
+
 
     public void setEssenceType(EssenceTypes essenceType) {
         this.essenceType = essenceType;
@@ -38,35 +42,43 @@ public class Breeze extends Power {
 
 
     @Override
-    public void onPassivePower(Player player) {
-        Bukkit.getScheduler().runTaskTimer(plugin, task -> {
-            // give increasingly good effects as elevation increases
-            if (player.isOnline() && EssenceManager.getActiveEssence(player) == EssenceTypes.BREEZE && PowerManager.hasPassiveUnlocked(player)){
-                if(player.getY() >= 220){
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 1));
-                }
-                else if(player.getY() >= 170){
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 1));
-                }
-                else if(player.getY() >= 130){
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0));
-                }
-                else if(player.getY() >= 100){
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
-
-                }
+    public void activatePassivePower(Player player) {
+        passiveTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!player.isOnline()){
+                passiveTask.cancel();
                 return;
             }
 
-            task.cancel();
+            // give increasingly good effects as elevation increases
+            if(player.getY() >= 220){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 1));
+            }
+            else if(player.getY() >= 170){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 1));
+            }
+            else if(player.getY() >= 130){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0));
+            }
+            else if(player.getY() >= 100){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
+
+            }
         }, 0, 20);
     }
+
+    @Override
+    public void deactivatePassivePower(Player player){
+        passiveTask.cancel();
+    }
+
+
+
 
     @Override
     public void onWeakPower(Player player) {

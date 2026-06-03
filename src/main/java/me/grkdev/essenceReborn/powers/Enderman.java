@@ -31,6 +31,9 @@ import static me.grkdev.essenceReborn.EssenceReborn.plugin;
 public class Enderman extends Power {
     private EssenceTypes essenceType = EssenceTypes.ENDERMAN;
 
+
+
+
     public EssenceTypes getEssenceType() {
         return essenceType;
     }
@@ -40,16 +43,28 @@ public class Enderman extends Power {
     }
 
 
+
+
     @Override
-    public void onPassivePower(Player player) {
+    public void activatePassivePower(Player player) {
         // increase player reach by 1.5 blocks
         player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).setBaseValue(6);
         player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).setBaseValue(4.5);
     }
 
+    @Override
+    public void deactivatePassivePower(Player player) {
+        // increase player reach by 1.5 blocks
+        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).setBaseValue(4.5);
+        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).setBaseValue(3);
+    }
+
+
+
+
+
     // !! Possibly change to being able to swap places with the selected player or make 2 players (not you) swap places
     // !! Possibly support all entities not just players
-    // !! add effects and sounds
     @Override
     public void onWeakPower(Player player) {
         // title animation tasks

@@ -19,13 +19,18 @@ public class Default extends Power {
 
 
     @Override
-    public void onPassivePower(Player player) {
+    public void activatePassivePower(Player player) {
+
+    }
+
+    @Override
+    public void deactivatePassivePower(Player player) {
 
     }
 
     @Override
     public void onWeakPower(Player player) {
-        player.sendMessage(Component.text("test"));
+
     }
 
     @Override

@@ -30,10 +30,17 @@ public class PowerManager {
             return;
         }
 
-        if (!onWeakCooldown(player) && hasWeakPowerUnlocked(player)){
-            setWeakPowerCooldown(player);
-            essence.power.onWeakPower(player);
+        else if (!hasWeakPowerUnlocked(player)){
+            player.sendMessage(Component.text("You have not unlocked this power yet!", NamedTextColor.RED));
+            return;
         }
+        else if (onWeakCooldown(player)){
+            player.sendMessage(Component.text("This power is currently on cooldown!", NamedTextColor.RED));
+            return;
+        }
+
+        setWeakPowerCooldown(player);
+        essence.power.onWeakPower(player);
     }
 
     public static void activateStrongPower(Player player){
@@ -45,35 +52,49 @@ public class PowerManager {
             return;
         }
 
-        if (!onStrongCooldown(player) && hasStrongPowerUnlocked(player)){
-            essence.power.onStrongPower(player);
-            setStrongPowerCooldown(player);
+        else if (!hasStrongPowerUnlocked(player)){
+            player.sendMessage(Component.text("You have not unlocked this power yet!", NamedTextColor.RED));
+            return;
         }
+        else if (onStrongCooldown(player)){
+            player.sendMessage(Component.text("This power is currently on cooldown!", NamedTextColor.RED));
+            return;
+        }
+
+        essence.power.onStrongPower(player);
+        setStrongPowerCooldown(player);
     }
 
 
 
     // ------------------------------------------------------------------------------------------------------------------------------------------
 
-    public static void setWeakPowerCooldown(Player player){
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        EssenceTypes essence = EssenceManager.getActiveEssence(player);
-
-
-        final Component name = Component.text(essence.weakPowerName);
-        final BossBar cooldownBar = BossBar.bossBar(name, 1, BossBar.Color.YELLOW, BossBar.Overlay.PROGRESS);
+    public static void showCooldownBar(Player player, String title, int cooldown, BossBar.Color color){
+        final Component name = Component.text(title);
+        final BossBar cooldownBar = BossBar.bossBar(name, 1, color, BossBar.Overlay.PROGRESS);
         player.showBossBar(cooldownBar);
 
         scheduler.runTaskTimer(plugin, task ->{
             // decrement the cooldown bar by 1 second each second
             if (cooldownBar.progress() >= 0.01F){
-                cooldownBar.progress(cooldownBar.progress() - 1F /essence.weakPowerCooldown / 20F);
+                cooldownBar.progress(cooldownBar.progress() - 1F / cooldown / 20F);
                 return;
             }
 
             player.hideBossBar(cooldownBar);
             task.cancel();
         }, 0, 1);
+    }
+
+    public static void setWeakPowerCooldown(Player player){
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        EssenceTypes type = EssenceManager.getActiveEssence(player);
+
+
+
+        showCooldownBar(player, type.weakPowerName, type.weakPowerCooldown, BossBar.Color.YELLOW);
+
+
 
         // set the cooldown start time to be compared later
         pdc.set(new NamespacedKey(plugin, "weakCooldownStart"), PersistentDataType.LONG, System.nanoTime());
@@ -81,27 +102,24 @@ public class PowerManager {
 
     public static void setStrongPowerCooldown(Player player){
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        EssenceTypes essence = EssenceManager.getActiveEssence(player);
+        EssenceTypes type = EssenceManager.getActiveEssence(player);
 
 
-        final Component name = Component.text(essence.strongPowerName);
-        final BossBar cooldownBar = BossBar.bossBar(name, 1, BossBar.Color.RED, BossBar.Overlay.PROGRESS);
-        player.showBossBar(cooldownBar);
 
-        scheduler.runTaskTimer(plugin, task ->{
-            // decrement the cooldown bar by 1 second each second
-            if (cooldownBar.progress() >= 0.01F){
-                cooldownBar.progress(cooldownBar.progress() - 1F /essence.strongPowerCooldown / 20F);
-                return;
-            }
+        showCooldownBar(player, type.strongPowerName, type.strongPowerCooldown, BossBar.Color.RED);
 
-            player.hideBossBar(cooldownBar);
-            task.cancel();
-        }, 0, 1);
+
 
         // set the cooldown start time to be compared later
         pdc.set(new NamespacedKey(plugin, "strongCooldownStart"), PersistentDataType.LONG, System.nanoTime());
     }
+
+
+
+
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------
 
     public static void resetWeakPowerCooldown(Player player){
         PersistentDataContainer pdc = player.getPersistentDataContainer();
@@ -118,6 +136,11 @@ public class PowerManager {
             player.hideBossBar(bar);
         }
     }
+
+
+
+
+
     // ------------------------------------------------------------------------------------------------------------------------------------------
 
     //checks if the specified player is on the specified cooldown
@@ -136,6 +159,34 @@ public class PowerManager {
 
         return essence.strongPowerCooldown > (System.nanoTime() - cooldownTime) / 1000000000L;
     }
+
+    public static int getRemainingWeakCooldown(Player player){
+        EssenceTypes essence = EssenceManager.getActiveEssence(player);
+        long cooldownTime = player.getPersistentDataContainer().getOrDefault(new NamespacedKey(plugin, "weakCooldownStart"), PersistentDataType.LONG, 0L);
+        int timePassed = (int) ((System.nanoTime() - cooldownTime) / 1000000000L);
+
+        if (essence.weakPowerCooldown > timePassed){
+            return essence.weakPowerCooldown - timePassed;
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public static int getRemainingStrongCooldown(Player player){
+        EssenceTypes essence = EssenceManager.getActiveEssence(player);
+        long cooldownTime = player.getPersistentDataContainer().getOrDefault(new NamespacedKey(plugin, "strongCooldownStart"), PersistentDataType.LONG, 0L);
+        int timePassed = (int) ((System.nanoTime() - cooldownTime) / 1000000000L);
+
+        if (essence.strongPowerCooldown > timePassed){
+            return essence.strongPowerCooldown - timePassed;
+        }
+        else{
+            return 0;
+        }
+    }
+
+
 
     // ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -181,6 +232,10 @@ public class PowerManager {
 
         return essenceAmount >= essence.strongPowerThreshold;
     }
+
+
+
+
 
     // ------------------------------------------------------------------------------------------------------------------------------------------
 

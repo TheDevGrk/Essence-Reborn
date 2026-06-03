@@ -17,6 +17,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -29,8 +30,10 @@ import java.util.ArrayList;
 import static me.grkdev.essenceReborn.EssenceReborn.plugin;
 
 public class Cow extends Power {
-
     private EssenceTypes essenceType = EssenceTypes.COW;
+    private BukkitTask passiveTask;
+
+
 
     public EssenceTypes getEssenceType() {
         return essenceType;
@@ -41,24 +44,36 @@ public class Cow extends Power {
     }
 
 
+
+
     @Override
-    public void onPassivePower(Player player) {
-        Bukkit.getScheduler().runTaskTimer(plugin, task -> {
-            if (player.isOnline() && EssenceManager.getActiveEssence(player) == EssenceTypes.COW){
-                if(PowerManager.hasPassiveUnlocked(player)){
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 1));
-                    //immunities
-                    player.removePotionEffect(PotionEffectType.DARKNESS);
-                    player.removePotionEffect(PotionEffectType.HUNGER);
-                    player.removePotionEffect(PotionEffectType.WITHER);
-                    player.removePotionEffect(PotionEffectType.MINING_FATIGUE);
-                }
+    public void activatePassivePower(Player player) {
+        passiveTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!player.isOnline()){
+                passiveTask.cancel();
                 return;
             }
 
-            task.cancel();
+            if(PowerManager.hasPassiveUnlocked(player)){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 1));
+                //immunities
+                player.removePotionEffect(PotionEffectType.DARKNESS);
+                player.removePotionEffect(PotionEffectType.HUNGER);
+                player.removePotionEffect(PotionEffectType.WITHER);
+                player.removePotionEffect(PotionEffectType.MINING_FATIGUE);
+            }
+
+            passiveTask.cancel();
         }, 0, 20);
     }
+
+    @Override
+    public void deactivatePassivePower(Player player){
+        passiveTask.cancel();
+    }
+
+
+
 
     @Override
     public void onStrongPower(Player player) {

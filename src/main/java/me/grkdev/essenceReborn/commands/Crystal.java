@@ -2,6 +2,10 @@ package me.grkdev.essenceReborn.commands;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import me.grkdev.essenceReborn.data.EssenceManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -11,6 +15,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
+
 import static me.grkdev.essenceReborn.EssenceReborn.plugin;
 
 public class Crystal implements BasicCommand {
@@ -19,15 +25,7 @@ public class Crystal implements BasicCommand {
     public void execute(CommandSourceStack source, String[] args) {
         Player player = (Player) source.getSender();
 
-        ItemStack crystal = new ItemStack(Material.PAPER);
-        ItemMeta crystalMeta = crystal.getItemMeta();
-
-        crystalMeta.getPersistentDataContainer().set(new NamespacedKey(plugin, "is_power_crystal"), PersistentDataType.BOOLEAN, true);
-        crystalMeta.setItemModel(NamespacedKey.fromString("minecraft:item/essencereborn/power_crystal"));
-
-        crystal.setItemMeta(crystalMeta);
-
-        player.give(crystal);
+        player.give(EssenceManager.createEssenceCrystal());
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
@@ -22,8 +23,11 @@ import org.bukkit.util.Vector;
 import static me.grkdev.essenceReborn.EssenceReborn.plugin;
 
 public class Piglin extends Power {
-
     private EssenceTypes essenceType = EssenceTypes.PIGLIN;
+    private BukkitTask passiveTask;
+
+
+
 
     public EssenceTypes getEssenceType() {
         return essenceType;
@@ -34,21 +38,31 @@ public class Piglin extends Power {
     }
 
 
+
+
+
     @Override
-    public void onPassivePower(Player player) {
-        Bukkit.getScheduler().runTaskTimer(plugin, task -> {
-            if (player.isOnline() && EssenceManager.getActiveEssence(player) == EssenceTypes.PIGLIN){
-                if(PowerManager.hasPassiveUnlocked(player) && player.getWorld().getName().equals("world_nether")){
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 2));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 40, 0));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
-                }
+    public void activatePassivePower(Player player) {
+        passiveTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!player.isOnline()){
+                passiveTask.cancel();
                 return;
             }
 
-            task.cancel();
+            if(PowerManager.hasPassiveUnlocked(player) && player.getWorld().getName().equals("world_nether")){
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 40, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 40, 0));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
+            }
         }, 0, 20);
     }
+
+    public void deactivatePassivePower(Player player){
+        passiveTask.cancel();
+    }
+
+
+
 
     @Override
     public void onWeakPower(Player player) {

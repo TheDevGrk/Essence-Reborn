@@ -19,6 +19,8 @@ import static me.grkdev.essenceReborn.EssenceReborn.plugin;
 public class Warden extends Power {
     private EssenceTypes essenceType = EssenceTypes.WARDEN;
 
+
+
     public EssenceTypes getEssenceType() {
         return essenceType;
     }
@@ -28,10 +30,20 @@ public class Warden extends Power {
     }
 
 
+
+
     @Override
-    public void onPassivePower(Player player) {
+    public void activatePassivePower(Player player) {
         player.getAttribute(Attribute.SNEAKING_SPEED).setBaseValue(1); // quadruple sneaking speed
     }
+
+    @Override
+    public void deactivatePassivePower(Player player) {
+        player.getAttribute(Attribute.SNEAKING_SPEED).setBaseValue(.3); // reset sneaking speed
+    }
+
+
+
 
     @Override
     public void onWeakPower(Player player) {

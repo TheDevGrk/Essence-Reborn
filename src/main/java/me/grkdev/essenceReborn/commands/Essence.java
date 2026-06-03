@@ -6,6 +6,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -15,16 +17,19 @@ import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.DialogBase;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
+import me.grkdev.essenceReborn.PowerManager;
 import me.grkdev.essenceReborn.data.EssenceDescriptions;
 import me.grkdev.essenceReborn.data.EssenceManager;
 import me.grkdev.essenceReborn.data.EssenceTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class Essence {
 
@@ -36,13 +41,7 @@ public class Essence {
                                 .then(Commands.argument("player", ArgumentTypes.player())
                                         .requires(sender -> sender.getSender().isOp())
                                         .then(Commands.argument("type", StringArgumentType.word())
-                                                .suggests((ctx, builder) -> {
-                                                    for (EssenceTypes type : EssenceTypes.values()){
-                                                        if (type == EssenceTypes.DEFAULT) continue;
-                                                        builder.suggest(type.toString());
-                                                    }
-                                                    return builder.buildFuture();
-                                                })
+                                                .suggests((ctx, builder) -> getEssenceTypeSuggestions(builder))
                                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                                         .executes(Essence::giveEssence)
                                                 )
@@ -63,13 +62,7 @@ public class Essence {
                                 .then(Commands.argument("player", ArgumentTypes.player())
                                         .requires(sender -> sender.getSender().isOp())
                                         .then(Commands.argument("type", StringArgumentType.word())
-                                                .suggests((ctx, builder) -> {
-                                                    for (EssenceTypes type : EssenceTypes.values()){
-                                                        if (type == EssenceTypes.DEFAULT) continue;
-                                                        builder.suggest(type.toString());
-                                                    }
-                                                    return builder.buildFuture();
-                                                })
+                                                .suggests((ctx, builder) -> getEssenceTypeSuggestions(builder))
                                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                                         .executes(Essence::manageAdd)
                                                 )
@@ -80,13 +73,7 @@ public class Essence {
                                 .then(Commands.argument("player", ArgumentTypes.player())
                                         .requires(sender -> sender.getSender().isOp())
                                         .then(Commands.argument("type", StringArgumentType.word())
-                                                .suggests((ctx, builder) -> {
-                                                    for (EssenceTypes type : EssenceTypes.values()){
-                                                        if (type == EssenceTypes.DEFAULT) continue;
-                                                        builder.suggest(type.toString());
-                                                    }
-                                                    return builder.buildFuture();
-                                                })
+                                                .suggests((ctx, builder) -> getEssenceTypeSuggestions(builder))
                                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                                         .executes(Essence::manageRemove)
                                                 )
@@ -97,13 +84,7 @@ public class Essence {
                                 .then(Commands.argument("player", ArgumentTypes.player())
                                         .requires(sender -> sender.getSender().isOp())
                                         .then(Commands.argument("type", StringArgumentType.word())
-                                                .suggests((ctx, builder) -> {
-                                                    for (EssenceTypes type : EssenceTypes.values()){
-                                                        if (type == EssenceTypes.DEFAULT) continue;
-                                                        builder.suggest(type.toString());
-                                                    }
-                                                    return builder.buildFuture();
-                                                })
+                                                .suggests((ctx, builder) -> getEssenceTypeSuggestions(builder))
                                                 .executes(Essence::manageSelect)
                                         )
                                 )
@@ -116,13 +97,7 @@ public class Essence {
                         )
                         .then(Commands.literal("disable")
                                 .then(Commands.argument("type", StringArgumentType.word())
-                                        .suggests((ctx, builder) -> {
-                                            for (EssenceTypes type : EssenceTypes.values()){
-                                                if (type == EssenceTypes.DEFAULT) continue;
-                                                builder.suggest(type.toString());
-                                            }
-                                            return builder.buildFuture();
-                                        })
+                                        .suggests((ctx, builder) -> getEssenceTypeSuggestions(builder))
                                         .requires(sender -> sender.getSender().isOp())
                                         .executes(Essence::manageDisable)
                                 )
@@ -130,17 +105,21 @@ public class Essence {
                         .then(Commands.literal("enable")
                                 .then(Commands.argument("type", StringArgumentType.word())
                                         .requires(sender -> sender.getSender().isOp())
-                                        .suggests((ctx, builder) -> {
-                                            for (EssenceTypes type : EssenceTypes.values()){
-                                                if (type == EssenceTypes.DEFAULT) continue;
-                                                builder.suggest(type.toString());
-                                            }
-                                            return builder.buildFuture();
-                                        })
+                                        .suggests((ctx, builder) -> getEssenceTypeSuggestions(builder))
                                         .executes(Essence::manageEnable)
                                 )
                         )
                 );
+    }
+
+    // generates suggestions for "type" argument in essence commands
+    private static CompletableFuture<Suggestions> getEssenceTypeSuggestions(SuggestionsBuilder builder) {
+        for (EssenceTypes type : EssenceTypes.values()){
+            if (type == EssenceTypes.DEFAULT) continue;
+            builder.suggest(type.toString());
+        }
+        builder.suggest("all");
+        return builder.buildFuture();
     }
 
     // !! once essence can be converted to items, make this give essence items instead of actual essence
@@ -291,6 +270,13 @@ public class Essence {
         EssenceTypes type = EssenceTypes.getEssenceType(ctx.getArgument("type", String.class));
         type.power.setEnabled(false);
 
+        // disable passives as well
+        for (Player p : Bukkit.getOnlinePlayers()){
+            if (EssenceManager.getActiveEssence(p) == type){
+                type.power.deactivatePassivePower(p);
+            }
+        }
+
         ctx.getSource().getExecutor().sendMessage(Component.text("Disabled " + type + " Essence!", NamedTextColor.DARK_RED));
 
 
@@ -300,6 +286,13 @@ public class Essence {
     private static int manageEnable(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException{
         EssenceTypes type = EssenceTypes.getEssenceType(ctx.getArgument("type", String.class));
         type.power.setEnabled(true);
+
+        // enable passives as well
+        for (Player p : Bukkit.getOnlinePlayers()){
+            if (EssenceManager.getActiveEssence(p) == type && PowerManager.hasPassiveUnlocked(p)){
+                type.power.activatePassivePower(p);
+            }
+        }
 
         ctx.getSource().getExecutor().sendMessage(Component.text("Enabled " + type + " Essence!", NamedTextColor.DARK_GREEN));
 
