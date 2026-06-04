@@ -37,22 +37,6 @@ public class MobDeathListener implements Listener {
 
             player.sendMessage(Component.text("The " + e.getEntityType().toString().toLowerCase() + " dropped " + dropAmount + " essence!", NamedTextColor.AQUA));
 
-
-
-            // notify player of power unlocks
-            if (type != EssenceManager.getActiveEssence(player)) return;
-
-            if (EssenceManager.getEssence(player, type) == type.passivePowerThreshold){
-                player.sendMessage(Component.text("You unlocked a new power: " + type.passivePowerName, NamedTextColor.GREEN));
-                // activate the player's passive power if they now meet the threshold and have this mob's essence selected
-                type.power.activatePassivePower(player);
-            }
-            else if(EssenceManager.getEssence(player, type) == type.weakPowerThreshold){
-                player.sendMessage(Component.text("You unlocked a new power: " + type.weakPowerName, NamedTextColor.GREEN));
-            }
-            else if(EssenceManager.getEssence(player, type) == type.strongPowerThreshold){
-                player.sendMessage(Component.text("You unlocked a new power: " + type.strongPowerName, NamedTextColor.GREEN));
-            }
         }
     }
 }

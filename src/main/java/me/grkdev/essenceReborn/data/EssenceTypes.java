@@ -19,9 +19,9 @@ public enum EssenceTypes {
     ENDERMAN(EntityType.ENDERMAN, .1, 130, 250, 180, new Enderman(), 180, 180, "Quantum Leap", "Hydrophobic", "Lanky Arms", EssenceDescriptions.ENDERMAN_POWER_WEAK, EssenceDescriptions.ENDERMAN_POWER_STRONG, EssenceDescriptions.ENDERMAN_POWER_PASSIVE, NamedTextColor.LIGHT_PURPLE),
     WITHER(EntityType.WITHER, .3, 10, 90, 25, new Wither(), 60,  480, "Exploding Skulls", "Necromancer Lord", "Decaying Touch", EssenceDescriptions.WITHER_POWER_WEAK, EssenceDescriptions.WITHER_POWER_STRONG, EssenceDescriptions.WITHER_POWER_PASSIVE, NamedTextColor.DARK_GRAY),
     WARDEN(EntityType.WARDEN, .2, 55, 75, 25, new Warden(), 90, 120, "Sonic Boom", "Sniff", "Sneaky", EssenceDescriptions.WARDEN_POWER_WEAK, EssenceDescriptions.WARDEN_POWER_STRONG, EssenceDescriptions.WARDEN_POWER_PASSIVE, NamedTextColor.DARK_BLUE),
-
+    SKELETON(EntityType.SKELETON, .2, 150, 250, 100, new Skeleton(), 2, 2, "Enchanted Quiver", "Skeletal Grasp", "Sniper", EssenceDescriptions.SKELETON_POWER_WEAK, EssenceDescriptions.SKELETON_POWER_STRONG, EssenceDescriptions.SKELETON_POWER_PASSIVE, NamedTextColor.GRAY),
     ;
-//? potentially add a field for the range of essences a mob could drop
+
     // ? skeleton passive: arrows shot are random type of tipped arrow (can switch between two modes: good and bad)
     // ? for all hostile mob essences, once the player has reached the strong power threshold (max essence needed), that mob won't attack them anymore?
 

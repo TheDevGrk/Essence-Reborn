@@ -36,26 +36,32 @@ public class EssenceManager {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, type.name().toLowerCase() + "_essence");
 
-        if (pdc.has(key)){ // can access normally if they already have the essence in their pdc
-            return pdc.getOrDefault(key, PersistentDataType.INTEGER, 0);
-        }
-
-        // if the player hasn't yet gotten any of this essence, add it to their pdc and set it to 0
-        pdc.set(key, PersistentDataType.INTEGER, 0);
-        return 0;
+        return pdc.getOrDefault(key, PersistentDataType.INTEGER, 0);
     }
 
     public static void addEssence(Player player, EssenceTypes type, int amount){
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, type.name().toLowerCase() + "_essence");
 
-        if (pdc.has(key)){
-            pdc.set(key, PersistentDataType.INTEGER, amount + pdc.getOrDefault(key, PersistentDataType.INTEGER, 0));
-            return;
-        }
+        // add essence
+        pdc.set(key, PersistentDataType.INTEGER, amount + pdc.getOrDefault(key, PersistentDataType.INTEGER, 0));
 
-        // if the player hasn't yet gotten any of this essence, add it to their pdc and set it to the amount being added
-        pdc.set(key, PersistentDataType.INTEGER, amount);
+
+
+        // notify player of power unlocks
+        if (type != getActiveEssence(player)) return;
+
+        if (getEssence(player, type) == type.passivePowerThreshold){
+            player.sendMessage(Component.text("You unlocked a new power: " + type.passivePowerName, NamedTextColor.GREEN));
+            // activate the player's passive power if they now meet the threshold and have this mob's essence selected
+            type.power.activatePassivePower(player);
+        }
+        else if(getEssence(player, type) == type.weakPowerThreshold){
+            player.sendMessage(Component.text("You unlocked a new power: " + type.weakPowerName, NamedTextColor.GREEN));
+        }
+        else if(getEssence(player, type) == type.strongPowerThreshold) {
+            player.sendMessage(Component.text("You unlocked a new power: " + type.strongPowerName, NamedTextColor.GREEN));
+        }
     }
 
 
@@ -63,13 +69,8 @@ public class EssenceManager {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, type.name().toLowerCase() + "_essence");
 
-        if (pdc.has(key)){
-            pdc.set(key, PersistentDataType.INTEGER, Math.max(pdc.getOrDefault(key, PersistentDataType.INTEGER, 0) - amount, 0));
-            return;
-        }
-
-        // if the player hasn't yet gotten any of this essence, add it to their pdc and set it to 0 (no negative essence allowed)
-        pdc.set(key, PersistentDataType.INTEGER, 0);
+        // remove essence
+        pdc.set(key, PersistentDataType.INTEGER, Math.max(pdc.getOrDefault(key, PersistentDataType.INTEGER, 0) - amount, 0));
     }
 
 

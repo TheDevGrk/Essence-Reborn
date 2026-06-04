@@ -44,6 +44,7 @@ public final class EssenceReborn extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ResourcePackOnJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new SurpriseChickenHatchListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockCraftingListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SkeletonArrowListener(), this);
 
         //-----------------------------------------------------------------------------------
 
@@ -158,4 +159,5 @@ public final class EssenceReborn extends JavaPlugin {
     // make @a, @p, etc. work for /essence commands
     // Dragon egg features
     // make essence crystal lore say name of currently equipped essence and instead of "Weak Power" and "Strong Power" have the power names and descriptions
+    // make mobs able to drop a range # of essence with increasingly rare chance for more essence
 }

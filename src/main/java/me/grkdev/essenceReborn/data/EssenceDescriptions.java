@@ -50,6 +50,13 @@ public class EssenceDescriptions {
     public static final Component WARDEN_POWER_PASSIVE = Component.text("As a warden, sound is your specialty, and therefore you know how to sneak around very well. " +
             "\nYour walking speed is not decreased when you are sneaking.");
 
+    public static final Component SKELETON_POWER_WEAK = Component.text("Skeleton's quivers never seem to be bottomless pits, and in some of those pits, you might just find some Enchanted arrows!" +
+            "\nWhile this ability is active, all arrows that you shoot contain a random negative potion effect!");
+    public static final Component SKELETON_POWER_STRONG = Component.text("It is said that the deadly grasp of a skeleton is as strong as steel!" +
+            "\nThe next opponent you shoot with an arrow will be frozen in place by a Skeletal Grasp for 15 seconds!");
+    public static final Component SKELETON_POWER_PASSIVE = Component.text("SNIPE! Skeletons are master snipers." +
+            "\nIf you indeed inherit their good aim, your arrows will increase in damage for each 10 blocks they travel before hitting their targets!");
+
 
     // creates a list of all the essence names and descriptions to be used in a dialog
     public static List<DialogBody> createEssenceListDialog(Player player){
