@@ -17,3 +17,7 @@ The plugin will be posted on Modrinth (hopefully) soon™ and a Discord server w
 1. Download the compiled plugin from Modrinth: https://modrinth.com/plugin/essence-reborn
 2. Create a PaperMC Server (See the PaperMC Docs https://papermc.io/)
 3. Drag the Essence Reborn jar file into your plugins folder, restart the server, and you're ready to go!
+
+
+## Showcase
+You can watch a [showcase](https://youtu.be/WLGidLP9MLM) of the plugin on my YouTube channel. It isn't anything fancy, but it shows off all of the powers from the plugin!
